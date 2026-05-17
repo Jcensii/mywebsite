@@ -1,0 +1,1086 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>YourCustom - Used & New Car Parts Marketplace</title>
+  <style>
+    :root {
+      --bg: #f7f1e8;
+      --card: #fffaf3;
+      --text: #2d221a;
+      --muted: #7b675a;
+      --brand: #9f512d;
+      --brand-dark: #7f4125;
+      --accent: #f4a662;
+      --line: #eadccf;
+      --good: #8c5a2b;
+      --danger: #b91c1c;
+      --shadow: 0 10px 30px rgba(77, 49, 28, .10);
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      background: radial-gradient(circle at top, #fff7ef 0%, #f7f1e8 45%, #efe2d2 100%);
+      color: var(--text);
+    }
+    a { color: inherit; text-decoration: none; }
+    .topbar {
+      position: sticky; top: 0; z-index: 10;
+      background: rgba(255, 250, 243, .92);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--line);
+    }
+    .nav {
+      max-width: 1280px; margin: 0 auto; padding: 14px 20px;
+      display: flex; gap: 14px; align-items: center; justify-content: space-between;
+    }
+    .brand {
+      display: flex; align-items: center; gap: 10px;
+      font-weight: 900; font-size: 1.1rem;
+    }
+    .logo {
+      width: 42px; height: 42px; border-radius: 14px;
+      background: linear-gradient(135deg, var(--brand), var(--accent));
+      color: white; display: grid; place-items: center;
+      font-weight: 900; box-shadow: var(--shadow);
+    }
+    .search {
+      flex: 1; max-width: 640px; display: flex; gap: 10px;
+      background: white; border: 1px solid var(--line); border-radius: 999px;
+      padding: 10px 14px;
+    }
+    .search input, .search select, .search button, .chip, .btn { font: inherit; }
+    .search input {
+      border: 0; outline: 0; flex: 1; background: transparent;
+    }
+    .search select {
+      border: 0; outline: 0; background: transparent; color: var(--muted);
+    }
+    .search button, .btn {
+      border: 0; border-radius: 999px; padding: 10px 16px;
+      background: var(--brand); color: white; cursor: pointer; font-weight: 700;
+    }
+    .search button:hover, .btn:hover { background: var(--brand-dark); }
+    .nav-actions { display: flex; gap: 10px; align-items: center; }
+    .ghost {
+      background: white; color: var(--text); border: 1px solid var(--line);
+    }
+    .hero {
+      max-width: 1280px; margin: 24px auto 0; padding: 0 20px;
+      display: grid; grid-template-columns: 1.2fr .8fr; gap: 20px;
+    }
+    .hero-card {
+      background: linear-gradient(135deg, #4a2c1d, #8c5a2b);
+      color: white; border-radius: 28px; padding: 32px;
+      box-shadow: var(--shadow);
+    }
+    .hero-card h1 { margin: 0 0 12px; font-size: clamp(2rem, 4vw, 3.5rem); line-height: 1.05; }
+    .hero-card p { margin: 0 0 20px; color: rgba(255,255,255,.84); max-width: 56ch; }
+    .hero-stats { display: flex; gap: 18px; flex-wrap: wrap; margin-top: 22px; }
+    .stat {
+      background: rgba(255,255,255,.10);
+      border: 1px solid rgba(255,255,255,.14);
+      border-radius: 18px; padding: 14px 16px; min-width: 150px;
+    }
+    .stat strong { display: block; font-size: 1.2rem; margin-bottom: 4px; }
+    .hero-side { display: grid; gap: 20px; }
+    .panel {
+      background: var(--card); border-radius: 24px; padding: 22px;
+      box-shadow: var(--shadow); border: 1px solid rgba(0,0,0,.04);
+    }
+    .panel h3 { margin: 0 0 14px; }
+    .categories {
+      max-width: 1280px; margin: 22px auto 0; padding: 0 20px;
+      display: flex; gap: 10px; overflow-x: auto; scrollbar-width: none;
+    }
+    .categories::-webkit-scrollbar { display: none; }
+    .chip {
+      white-space: nowrap; padding: 11px 16px; border-radius: 999px;
+      background: white; border: 1px solid var(--line); cursor: pointer;
+    }
+    .chip.active { background: var(--brand); color: white; border-color: var(--brand); }
+    .content {
+      max-width: 1280px; margin: 22px auto; padding: 0 20px 36px;
+      display: grid; grid-template-columns: 280px 1fr; gap: 20px;
+    }
+    .filters label {
+      display: block; font-size: .9rem; font-weight: 700; margin: 14px 0 8px;
+    }
+    .filters input, .filters select, .sell-card input, .sell-card textarea,
+    .form-input, .form-select {
+      width: 100%; padding: 12px 14px; border: 1px solid var(--line);
+      border-radius: 14px; background: white; outline: none;
+    }
+    .list-head {
+      display: flex; justify-content: space-between; align-items: center; gap: 12px;
+      margin-bottom: 14px;
+    }
+    .grid {
+      display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px;
+    }
+    .card {
+      background: white; border-radius: 22px; overflow: hidden;
+      border: 1px solid rgba(0,0,0,.04); box-shadow: var(--shadow);
+      cursor: pointer;
+    }
+    .thumb {
+      height: 180px;
+      background: linear-gradient(135deg, #f4a662, #d38969 40%, #8c5a2b);
+      position: relative; padding: 14px;
+    }
+    .badge {
+      position: absolute; top: 14px; left: 14px;
+      background: rgba(255,255,255,.94); color: var(--text);
+      padding: 7px 10px; border-radius: 999px; font-size: .8rem; font-weight: 700;
+    }
+    .badge.used { background: #f7e4d9; color: #7f4125; }
+    .card-body { padding: 16px; }
+    .title { margin: 0 0 8px; font-size: 1.02rem; }
+    .meta, .seller { color: var(--muted); font-size: .92rem; }
+    .price-row {
+      display: flex; align-items: center; justify-content: space-between; margin-top: 14px;
+    }
+    .price { font-size: 1.2rem; font-weight: 800; color: var(--good); }
+    .seller {
+      display: flex; align-items: center; gap: 10px; margin-top: 12px;
+    }
+    .avatar {
+      width: 34px; height: 34px; border-radius: 50%;
+      background: #eadccf; display: grid; place-items: center;
+      font-weight: 800; color: #5a4335;
+    }
+    .sell-card { display: grid; gap: 10px; }
+    .sell-card textarea { min-height: 96px; resize: vertical; }
+    footer {
+      max-width: 1280px; margin: 0 auto; padding: 0 20px 30px;
+      color: var(--muted); display: flex; justify-content: space-between; gap: 14px; flex-wrap: wrap;
+    }
+
+    .page { display: none; }
+    .page.active { display: block; }
+
+    .auth-layout, .profile-layout, .mylistings-layout, .messages-layout {
+      max-width: 1280px; margin: 0 auto; padding: 24px 20px 40px;
+    }
+    .auth-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+    .profile-layout { display: grid; grid-template-columns: 320px 1fr; gap: 24px; }
+    .mylistings-layout, .messages-layout { display: grid; grid-template-columns: 1fr; gap: 24px; }
+    @media (max-width: 900px) {
+      .auth-layout, .profile-layout { grid-template-columns: 1fr; }
+    }
+    .auth-card, .profile-card, .listings-card, .messages-card {
+      background: var(--card); border-radius: 24px; padding: 26px;
+      box-shadow: var(--shadow); border: 1px solid rgba(0,0,0,.04);
+    }
+    .auth-card h2, .profile-card h2, .listings-card h2, .messages-card h2 { margin: 0 0 14px; }
+    .auth-card p, .profile-card p, .hint { color: var(--muted); margin: 0 0 18px; }
+    .auth-card label, .profile-card label {
+      display: block; font-weight: 700; margin: 12px 0 6px;
+    }
+    .auth-card .form-actions, .profile-card .form-actions {
+      margin-top: 18px; display: flex; gap: 10px; flex-wrap: wrap;
+    }
+    .auth-note { color: var(--muted); font-size: .95rem; margin-top: 10px; }
+
+    .password-wrapper { position: relative; }
+    .password-toggle {
+      position: absolute;
+      right: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: transparent;
+      border: 0;
+      color: var(--muted);
+      cursor: pointer;
+      font-size: 0.9rem;
+      font-weight: 700;
+      padding: 4px 8px;
+      border-radius: 8px;
+    }
+    .password-toggle:hover { background: rgba(0,0,0,.04); }
+
+    .listing-item {
+      display: grid; grid-template-columns: 1fr auto; gap: 10px;
+      padding: 14px; border-radius: 14px; border: 1px solid var(--line); background: white;
+    }
+    .listing-info strong { display: block; font-size: 1rem; }
+    .listing-info .meta { font-size: .92rem; margin-top: 4px; }
+    .listing-actions { display: flex; gap: 8px; align-items: center; }
+    .btn-sm {
+      padding: 8px 12px; font-size: .9rem; border-radius: 10px; border: 0; cursor: pointer; font-weight: 700;
+    }
+    .btn-sm.edit { background: var(--brand); color: white; }
+    .btn-sm.delete { background: var(--danger); color: white; }
+
+    .message-item {
+      display: grid; grid-template-columns: 120px 1fr; gap: 12px;
+      padding: 14px; border-radius: 14px; border: 1px solid var(--line); background: white;
+    }
+    .message-sender { font-weight: 700; display: flex; flex-direction: column; gap: 4px; }
+    .message-body { color: var(--text); }
+    .message-meta { font-size: .85rem; color: var(--muted); margin-top: 4px; }
+    .message-form { display: grid; gap: 10px; margin-top: 18px; }
+
+    .modal-overlay {
+      position: fixed; inset: 0; background: rgba(0,0,0,.55);
+      display: none; align-items: center; justify-content: center; z-index: 100; padding: 20px;
+    }
+    .modal-overlay.active { display: flex; }
+    .modal {
+      background: var(--card); border-radius: 22px; width: 100%; max-width: 620px;
+      box-shadow: var(--shadow); border: 1px solid rgba(0,0,0,.06);
+      max-height: 90vh; overflow-y: auto; position: relative;
+    }
+    .modal-header {
+      padding: 20px 22px; border-bottom: 1px solid var(--line);
+      display: flex; justify-content: space-between; align-items: center;
+    }
+    .modal-title { margin: 0; font-size: 1.2rem; }
+    .modal-close {
+      background: transparent; border: 0; font-size: 1.5rem; color: var(--muted); cursor: pointer; line-height: 1;
+    }
+    .modal-body { padding: 22px; }
+    .modal-meta { color: var(--muted); margin-top: 4px; }
+    .modal-actions { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 18px; }
+
+    @media (max-width: 1100px) {
+      .hero, .content { grid-template-columns: 1fr; }
+      .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
+    @media (max-width: 700px) {
+      .nav { flex-wrap: wrap; }
+      .search { order: 3; flex-basis: 100%; }
+      .grid { grid-template-columns: 1fr; }
+      .message-item { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="nav">
+      <a class="brand" href="#home">
+        <div class="logo">YC</div>
+        <span>YourCustom</span>
+      </a>
+      <form class="search" id="searchForm">
+        <input id="searchInput" type="text" placeholder="Search BMW, Audi, tyres, wheels, spoilers..." />
+        <select id="categorySearch">
+          <option value="">All parts</option>
+          <option>Exterior</option>
+          <option>Interior</option>
+          <option>Engine</option>
+          <option>Wheels & Tyres</option>
+        </select>
+        <button type="submit">Search</button>
+      </form>
+      <div class="nav-actions">
+        <button class="btn ghost" id="loginNavBtn" type="button">Log in</button>
+        <button class="btn ghost" id="signupNavBtn" type="button">Sign up</button>
+        <button class="btn" id="logoutNavBtn" type="button" style="display:none;">Log out</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- HOME PAGE -->
+  <div class="page active" id="homePage">
+    <section class="hero">
+      <div class="hero-card">
+        <h1>Buy and sell used or new car parts.</h1>
+        <p>A Vinted-style marketplace for enthusiasts, breakers, and everyday drivers. List parts fast, message buyers, and keep your garage moving.</p>
+        <div class="sell-actions">
+          <button class="btn" id="heroSellBtn" type="button">Start selling</button>
+          <button class="btn ghost" id="heroBrowseBtn" type="button">Browse listings</button>
+        </div>
+        <div class="hero-stats">
+          <div class="stat"><strong>18,240</strong>Live listings</div>
+          <div class="stat"><strong>4.8/5</strong>Seller rating</div>
+          <div class="stat"><strong>Same-day</strong>Local pickup</div>
+        </div>
+      </div>
+      <div class="hero-side">
+        <div class="panel">
+          <h3>Popular searches</h3>
+          <p class="meta">M Sport bumper, alloy wheels, coilovers, headlights, intake kits, mirror caps, diffusers</p>
+        </div>
+        <div class="panel sell-card">
+          <h3>List a part</h3>
+          <form id="sellForm">
+            <input name="title" type="text" placeholder="Part title" required />
+            <select name="condition" required>
+              <option value="Used">Condition: Used</option>
+              <option value="New">Condition: New</option>
+            </select>
+            <input name="compatibility" type="text" placeholder="Make / model compatibility" required />
+            <input name="price" type="number" placeholder="Price (£)" required />
+            <textarea name="description" placeholder="Add a description, fitment notes, and delivery details..." required></textarea>
+            <button class="btn" type="submit">Publish listing</button>
+          </form>
+        </div>
+      </div>
+    </section>
+
+    <div class="categories" id="categoryBar">
+      <button class="chip active" data-category="">All</button>
+      <button class="chip" data-category="BMW">BMW</button>
+      <button class="chip" data-category="Audi">Audi</button>
+      <button class="chip" data-category="Mercedes">Mercedes</button>
+      <button class="chip" data-category="VW / Seat / Skoda">VW / Seat / Skoda</button>
+      <button class="chip" data-category="Wheels">Wheels</button>
+      <button class="chip" data-category="Tyres">Tyres</button>
+      <button class="chip" data-category="Body parts">Body parts</button>
+      <button class="chip" data-category="Lighting">Lighting</button>
+      <button class="chip" data-category="Performance">Performance</button>
+    </div>
+
+    <main class="content">
+      <aside class="panel filters">
+        <h3>Filters</h3>
+        <label>Price range</label>
+        <input id="minPrice" type="number" placeholder="Min £" />
+        <input id="maxPrice" type="number" placeholder="Max £" style="margin-top:8px;" />
+        <label>Condition</label>
+        <select id="conditionFilter">
+          <option value="">Any</option>
+          <option>New</option>
+          <option>Used</option>
+        </select>
+        <label>Vehicle make</label>
+        <input id="makeFilter" type="text" placeholder="e.g. BMW" />
+        <button class="btn" id="applyFilters" style="width:100%; margin-top:14px;" type="button">Apply filters</button>
+      </aside>
+      <section>
+        <div class="list-head">
+          <div>
+            <h2 style="margin:0;">Featured listings</h2>
+            <div class="meta">Hand-picked parts from trusted sellers.</div>
+          </div>
+          <select id="sortBy" style="padding:12px 14px; border:1px solid var(--line); border-radius:14px; background:white;">
+            <option value="recommended">Sort by: Recommended</option>
+            <option value="newest">Newest</option>
+            <option value="price-asc">Price low to high</option>
+            <option value="price-desc">Price high to low</option>
+          </select>
+        </div>
+        <div class="grid" id="listingGrid"></div>
+      </section>
+    </main>
+  </div>
+
+  <!-- LOGIN PAGE -->
+  <div class="page" id="loginPage">
+    <div class="auth-layout">
+      <div class="auth-card">
+        <h2>Log in to YourCustom</h2>
+        <p>Welcome back! Enter your details to log in.</p>
+        <form id="loginForm">
+          <label>Email</label>
+          <input class="form-input" type="email" name="email" placeholder="you@example.com" required />
+          <label>Password</label>
+          <div class="password-wrapper">
+            <input class="form-input" id="loginPassword" type="password" name="password" placeholder="••••••••" required />
+            <button type="button" class="password-toggle" data-target="loginPassword">Show</button>
+          </div>
+          <div class="form-actions">
+            <button class="btn" type="submit">Log in</button>
+            <button class="btn ghost" type="button" id="goToSignupFromLogin">Create account</button>
+          </div>
+          <p class="auth-note">This is a demo login – no real authentication.</p>
+        </form>
+      </div>
+      <div class="auth-card">
+        <h2>About YourCustom</h2>
+        <p>Buy and sell used and new car parts from private sellers and companies. Create an account to list parts, message buyers, and manage your sales.</p>
+        <ul>
+          <li>List new and used parts quickly</li>
+          <li>Filter by make, model, price, and condition</li>
+          <li>Contact sellers directly</li>
+          <li>Save favourites and manage your listings</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- SIGNUP PAGE -->
+  <div class="page" id="signupPage">
+    <div class="auth-layout">
+      <div class="auth-card">
+        <h2>Create your YourCustom account</h2>
+        <p>Join the marketplace for used and new car parts.</p>
+        <form id="signupForm">
+          <label>Full name</label>
+          <input class="form-input" type="text" name="name" placeholder="Your full name" required />
+          <label>Email</label>
+          <input class="form-input" type="email" name="email" placeholder="you@example.com" required />
+          <label>Password</label>
+          <div class="password-wrapper">
+            <input class="form-input" id="signupPassword" type="password" name="password" placeholder="Create a password" required />
+            <button type="button" class="password-toggle" data-target="signupPassword">Show</button>
+          </div>
+          <label>Confirm password</label>
+          <div class="password-wrapper">
+            <input class="form-input" id="signupConfirm" type="password" name="confirmPassword" placeholder="Confirm your password" required />
+            <button type="button" class="password-toggle" data-target="signupConfirm">Show</button>
+          </div>
+          <div class="form-actions">
+            <button class="btn" type="submit">Create account</button>
+            <button class="btn ghost" type="button" id="goToLoginFromSignup">Already have an account? Log in</button>
+          </div>
+          <p class="auth-note">This is a demo signup – no real authentication.</p>
+        </form>
+      </div>
+      <div class="auth-card">
+        <h2>Why create an account?</h2>
+        <p>Creating an account lets you:</p>
+        <ul>
+          <li>List parts as a private seller or company</li>
+          <li>Manage your listings and sales</li>
+          <li>Message buyers and sellers</li>
+          <li>Save favourite parts</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- PROFILE PAGE -->
+  <div class="page" id="profilePage">
+    <div class="profile-layout">
+      <div class="profile-card">
+        <h2>Your account</h2>
+        <p class="meta">Manage your seller details and preferences.</p>
+        <form id="profileForm">
+          <label>Seller type</label>
+          <select id="sellerType" class="form-select" required>
+            <option value="">Choose seller type</option>
+            <option value="Private seller">Private seller</option>
+            <option value="Company">Company</option>
+          </select>
+          <div class="hint">Select whether you sell as an individual or a business.</div>
+
+          <label>Full name</label>
+          <input class="form-input" id="profileName" type="text" placeholder="Full name" required />
+
+          <label>Email</label>
+          <input class="form-input" id="profileEmail" type="email" placeholder="you@example.com" required />
+
+          <label>Phone</label>
+          <input class="form-input" id="profilePhone" type="tel" placeholder="+44 ..." />
+
+          <label>Address</label>
+          <input class="form-input" id="profileAddress" type="text" placeholder="Street, city, postcode" required />
+
+          <label id="companyNameLabel" style="display:none;">Company name</label>
+          <input class="form-input" id="companyName" type="text" placeholder="Company name" style="display:none;" />
+
+          <label id="companyRegLabel" style="display:none;">Company registration number</label>
+          <input class="form-input" id="companyReg" type="text" placeholder="e.g. 12345678" style="display:none;" />
+
+          <div class="form-actions">
+            <button class="btn" type="submit">Save profile</button>
+            <button class="btn ghost" type="button" id="backToMarketFromProfile">Back to marketplace</button>
+          </div>
+        </form>
+      </div>
+      <div class="profile-card">
+        <h2>Your listings</h2>
+        <p class="meta">These are the parts you've listed so far.</p>
+        <div id="myListings" style="display:grid; gap:10px;"></div>
+        <p class="auth-note" style="margin-top:14px;">This is a demo view of your listings.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- MY LISTINGS PAGE -->
+  <div class="page" id="myListingsPage">
+    <div class="mylistings-layout">
+      <div class="listings-card">
+        <h2>My Listings</h2>
+        <p class="meta">Edit or delete your car part listings.</p>
+        <div id="myListingsFull" style="display:grid; gap:10px;"></div>
+        <p class="auth-note" style="margin-top:14px;">This is a demo view. Changes are saved locally.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- MESSAGES PAGE -->
+  <div class="page" id="messagesPage">
+    <div class="messages-layout">
+      <div class="messages-card">
+        <h2>Inbox</h2>
+        <p class="meta">Messages from buyers and sellers (demo).</p>
+        <div id="messagesList" style="display:grid; gap:10px;"></div>
+        <form class="message-form" id="messageForm">
+          <label>To</label>
+          <input class="form-input" id="msgTo" type="text" placeholder="Seller or buyer name" required />
+          <label>Subject</label>
+          <input class="form-input" id="msgSubject" type="text" placeholder="Re: your part listing" required />
+          <label>Message</label>
+          <textarea class="form-input" id="msgBody" placeholder="Write your message..." required style="min-height:96px;"></textarea>
+          <button class="btn" type="submit">Send message</button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Listing Detail Modal -->
+  <div class="modal-overlay" id="detailModal">
+    <div class="modal">
+      <div class="modal-header">
+        <h3 class="modal-title" id="detailTitle">Listing title</h3>
+        <button class="modal-close" id="detailClose" aria-label="Close">×</button>
+      </div>
+      <div class="modal-body">
+        <div class="meta" id="detailMeta">Category · Compatibility</div>
+        <div class="price" id="detailPrice" style="font-size:1.5rem; margin:10px 0;">£0</div>
+        <div class="seller" id="detailSeller" style="margin-top:8px;">
+          <div class="avatar">S</div> Seller · 0.0
+        </div>
+        <p id="detailDescription" style="margin-top:14px;">Description goes here.</p>
+        <div class="modal-actions">
+          <button class="btn" id="contactSellerBtn" type="button">Contact seller</button>
+          <button class="btn ghost" id="favoriteBtn" type="button">Save to favourites</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Edit Listing Modal -->
+  <div class="modal-overlay" id="editModal">
+    <div class="modal">
+      <div class="modal-header">
+        <h3 class="modal-title">Edit listing</h3>
+        <button class="modal-close" id="editClose" aria-label="Close">×</button>
+      </div>
+      <div class="modal-body">
+        <form id="editForm">
+          <input type="hidden" id="editId" />
+          <label>Title</label>
+          <input class="form-input" id="editTitle" type="text" required />
+          <label>Condition</label>
+          <select id="editCondition" class="form-select" required>
+            <option value="Used">Used</option>
+            <option value="New">New</option>
+          </select>
+          <label>Compatibility</label>
+          <input class="form-input" id="editCompatibility" type="text" required />
+          <label>Price (£)</label>
+          <input class="form-input" id="editPrice" type="number" required />
+          <label>Description</label>
+          <textarea class="form-input" id="editDescription" required style="min-height:96px;"></textarea>
+          <div class="modal-actions">
+            <button class="btn" type="submit">Save changes</button>
+            <button class="btn ghost" type="button" id="editCancel">Cancel</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const defaultListings = [
+      { id: 1, title: "BMW G20 M Sport front bumper", category: "BMW", condition: "Used", compatibility: "Fits 3 Series 2019-2024", price: 420, seller: "Alex T.", rating: 4.9, description: "Local pickup, clean condition." },
+      { id: 2, title: "18\" staggered alloy wheel set", category: "Wheels", condition: "New", compatibility: "4x100", price: 760, seller: "Jordan M.", rating: 5.0, description: "Brand new in boxes." },
+      { id: 3, title: "LED headlights pair", category: "Lighting", condition: "Used", compatibility: "Audi A3", price: 285, seller: "Sam R.", rating: 4.7, description: "No cracks, tested working." },
+      { id: 4, title: "Universal cold air intake kit", category: "Performance", condition: "New", compatibility: "Universal fit", price: 120, seller: "Dan P.", rating: 4.8, description: "Performance upgrade." },
+      { id: 5, title: "Carbon mirror caps", category: "Body parts", condition: "Used", compatibility: "BMW 3 Series", price: 55, seller: "Liam B.", rating: 4.6, description: "OEM fitment, minor marks." },
+      { id: 6, title: "Coilover suspension kit", category: "Performance", condition: "New", compatibility: "VW Golf Mk7", price: 690, seller: "Maya K.", rating: 5.0, description: "Adjustable height, fast dispatch." }
+    ];
+
+    const defaultMessages = [
+      { id: 1, from: "Alex T.", subject: "Re: BMW bumper", body: "Hi, the bumper is still available. Collection from Egham.", date: "2026-05-16" },
+      { id: 2, from: "Jordan M.", subject: "Wheel set question", body: "Are these compatible with a Golf Mk7?", date: "2026-05-15" }
+    ];
+
+    // Page elements
+    const homePage = document.getElementById("homePage");
+    const loginPage = document.getElementById("loginPage");
+    const signupPage = document.getElementById("signupPage");
+    const profilePage = document.getElementById("profilePage");
+    const myListingsPage = document.getElementById("myListingsPage");
+    const messagesPage = document.getElementById("messagesPage");
+
+    const loginNavBtn = document.getElementById("loginNavBtn");
+    const signupNavBtn = document.getElementById("signupNavBtn");
+    const logoutNavBtn = document.getElementById("logoutNavBtn");
+    const goToSignupFromLogin = document.getElementById("goToSignupFromLogin");
+    const goToLoginFromSignup = document.getElementById("goToLoginFromSignup");
+    const backToMarketFromProfile = document.getElementById("backToMarketFromProfile");
+
+    const loginForm = document.getElementById("loginForm");
+    const signupForm = document.getElementById("signupForm");
+    const profileForm = document.getElementById("profileForm");
+    const sellerType = document.getElementById("sellerType");
+    const companyNameLabel = document.getElementById("companyNameLabel");
+    const companyNameInput = document.getElementById("companyName");
+    const companyRegLabel = document.getElementById("companyRegLabel");
+    const companyRegInput = document.getElementById("companyReg");
+
+    const profileName = document.getElementById("profileName");
+    const profileEmail = document.getElementById("profileEmail");
+    const profilePhone = document.getElementById("profilePhone");
+    const profileAddress = document.getElementById("profileAddress");
+    const myListingsDiv = document.getElementById("myListings");
+    const myListingsFullDiv = document.getElementById("myListingsFull");
+    const messagesListDiv = document.getElementById("messagesList");
+    const messageForm = document.getElementById("messageForm");
+
+    const detailModal = document.getElementById("detailModal");
+    const editModal = document.getElementById("editModal");
+
+    // Navigation helpers
+    function showPage(page) {
+      [homePage, loginPage, signupPage, profilePage, myListingsPage, messagesPage].forEach(p => p.classList.remove("active"));
+      page.classList.add("active");
+      if (page === homePage) window.location.hash = "#home";
+      else if (page === loginPage) window.location.hash = "#login";
+      else if (page === signupPage) window.location.hash = "#signup";
+      else if (page === profilePage) window.location.hash = "#profile";
+      else if (page === myListingsPage) window.location.hash = "#my-listings";
+      else if (page === messagesPage) window.location.hash = "#messages";
+    }
+
+    function handleHash() {
+      const hash = window.location.hash || "#home";
+      if (hash.startsWith("#my-listings")) {
+        showPage(myListingsPage);
+        renderMyListingsFull();
+      } else if (hash === "#messages") {
+        showPage(messagesPage);
+        renderMessages();
+      } else if (hash === "#profile") {
+        loadProfile();
+        showPage(profilePage);
+      } else if (hash === "#login") {
+        showPage(loginPage);
+      } else if (hash === "#signup") {
+        showPage(signupPage);
+      } else {
+        showPage(homePage);
+      }
+      updateAuthButtons();
+    }
+
+    function isLoggedIn() {
+      return !!localStorage.getItem("yourcustomLoggedIn");
+    }
+
+    function updateAuthButtons() {
+      const log = isLoggedIn();
+      loginNavBtn.style.display = log ? "none" : "inline-block";
+      signupNavBtn.style.display = log ? "none" : "inline-block";
+      logoutNavBtn.style.display = log ? "inline-block" : "none";
+    }
+
+    logoutNavBtn.addEventListener("click", () => {
+      localStorage.removeItem("yourcustomLoggedIn");
+      localStorage.removeItem("yourcustomUserName");
+      localStorage.removeItem("yourcustomUserEmail");
+      alert("Logged out.");
+      updateAuthButtons();
+      showPage(homePage);
+    });
+
+    loginNavBtn.addEventListener("click", () => showPage(loginPage));
+    signupNavBtn.addEventListener("click", () => showPage(signupPage));
+    goToSignupFromLogin.addEventListener("click", () => showPage(signupPage));
+    goToLoginFromSignup.addEventListener("click", () => showPage(loginPage));
+    backToMarketFromProfile.addEventListener("click", () => showPage(homePage));
+
+    // Password toggle
+    document.querySelectorAll(".password-toggle").forEach(btn => {
+      btn.addEventListener("click", () => {
+        const targetId = btn.dataset.target;
+        const input = document.getElementById(targetId);
+        if (!input) return;
+        if (input.type === "password") {
+          input.type = "text";
+          btn.textContent = "Hide";
+        } else {
+          input.type = "password";
+          btn.textContent = "Show";
+        }
+      });
+    });
+
+    loginForm.addEventListener("submit", (e) => {
+      e.preventDefault();
+      localStorage.setItem("yourcustomLoggedIn", "true");
+      alert("Demo login successful. Redirecting to your profile...");
+      loadProfile();
+      showPage(profilePage);
+    });
+
+    signupForm.addEventListener("submit", (e) => {
+      e.preventDefault();
+      const data = new FormData(signupForm);
+      const name = data.get("name");
+      const email = data.get("email");
+      localStorage.setItem("yourcustomUserName", name);
+      localStorage.setItem("yourcustomUserEmail", email);
+      localStorage.setItem("yourcustomLoggedIn", "true");
+      alert("Demo signup successful. Redirecting to your profile...");
+      loadProfile();
+      showPage(profilePage);
+    });
+
+    function updateCompanyFields() {
+      const isCompany = sellerType.value === "Company";
+      companyNameLabel.style.display = isCompany ? "block" : "none";
+      companyNameInput.style.display = isCompany ? "block" : "none";
+      companyRegLabel.style.display = isCompany ? "block" : "none";
+      companyRegInput.style.display = isCompany ? "block" : "none";
+      companyNameInput.required = isCompany;
+      companyRegInput.required = isCompany;
+    }
+    sellerType.addEventListener("change", updateCompanyFields);
+
+    function loadProfile() {
+      const name = localStorage.getItem("yourcustomUserName") || "";
+      const email = localStorage.getItem("yourcustomUserEmail") || "";
+      const savedSellerType = localStorage.getItem("yourcustomSellerType") || "";
+      const phone = localStorage.getItem("yourcustomPhone") || "";
+      const address = localStorage.getItem("yourcustomAddress") || "";
+      const compName = localStorage.getItem("yourcustomCompanyName") || "";
+      const compReg = localStorage.getItem("yourcustomCompanyReg") || "";
+
+      profileName.value = name;
+      profileEmail.value = email;
+      sellerType.value = savedSellerType;
+      profilePhone.value = phone;
+      profileAddress.value = address;
+      companyNameInput.value = compName;
+      companyRegInput.value = compReg;
+      updateCompanyFields();
+      renderMyListings();
+      renderMyListingsFull();
+    }
+
+    profileForm.addEventListener("submit", (e) => {
+      e.preventDefault();
+      localStorage.setItem("yourcustomUserName", profileName.value.trim());
+      localStorage.setItem("yourcustomUserEmail", profileEmail.value.trim());
+      localStorage.setItem("yourcustomSellerType", sellerType.value);
+      localStorage.setItem("yourcustomPhone", profilePhone.value.trim());
+      localStorage.setItem("yourcustomAddress", profileAddress.value.trim());
+      localStorage.setItem("yourcustomCompanyName", companyNameInput.value.trim());
+      localStorage.setItem("yourcustomCompanyReg", companyRegInput.value.trim());
+      alert("Profile saved successfully.");
+      renderMyListings();
+      renderMyListingsFull();
+    });
+
+    // Listings
+    let listings = loadListings();
+    let nextId = Math.max(0, ...listings.map(l => l.id || 0)) + 1;
+
+    function loadListings() {
+      const saved = localStorage.getItem("yourcustomListings");
+      if (saved) return JSON.parse(saved);
+      localStorage.setItem("yourcustomListings", JSON.stringify(defaultListings));
+      return [...defaultListings];
+    }
+
+    function saveListings() {
+      localStorage.setItem("yourcustomListings", JSON.stringify(listings));
+    }
+
+    // Messages
+    let messages = loadMessages();
+    function loadMessages() {
+      const saved = localStorage.getItem("yourcustomMessages");
+      if (saved) return JSON.parse(saved);
+      localStorage.setItem("yourcustomMessages", JSON.stringify(defaultMessages));
+      return [...defaultMessages];
+    }
+    function saveMessages() {
+      localStorage.setItem("yourcustomMessages", JSON.stringify(messages));
+    }
+
+    // Render my listings
+    function renderMyListings() {
+      const name = localStorage.getItem("yourcustomUserName") || localStorage.getItem("yourcustomUserEmail") || "You";
+      const myListings = listings.filter(l => l.seller === name || l.seller === "You");
+      if (myListings.length === 0) {
+        myListingsDiv.innerHTML = `<p class="meta">You have no listings yet.</p>`;
+        return;
+      }
+      myListingsDiv.innerHTML = myListings.map(l => `
+        <div class="panel" style="padding:14px;">
+          <div style="display:flex; justify-content:space-between; align-items:center;">
+            <div>
+              <div style="font-weight:700;">${l.title}</div>
+              <div class="meta">${l.condition} · £${l.price}</div>
+            </div>
+            <div class="price" style="font-size:1.1rem;">£${l.price}</div>
+          </div>
+        </div>
+      `).join("");
+    }
+
+    function renderMyListingsFull() {
+      const name = localStorage.getItem("yourcustomUserName") || localStorage.getItem("yourcustomUserEmail") || "You";
+      const myListings = listings.filter(l => l.seller === name || l.seller === "You");
+      if (myListings.length === 0) {
+        myListingsFullDiv.innerHTML = `<p class="meta">You have no listings yet.</p>`;
+        return;
+      }
+      myListingsFullDiv.innerHTML = myListings.map(l => `
+        <div class="listing-item">
+          <div class="listing-info">
+            <strong>${l.title}</strong>
+            <div class="meta">${l.condition} · ${l.category} · £${l.price}</div>
+          </div>
+          <div class="listing-actions">
+            <button class="btn-sm edit" data-id="${l.id}">Edit</button>
+            <button class="btn-sm delete" data-id="${l.id}">Delete</button>
+          </div>
+        </div>
+      `).join("");
+
+      myListingsFullDiv.querySelectorAll(".btn-sm.edit").forEach(btn => {
+        btn.addEventListener("click", () => openEditModal(Number(btn.dataset.id)));
+      });
+      myListingsFullDiv.querySelectorAll(".btn-sm.delete").forEach(btn => {
+        btn.addEventListener("click", () => deleteListing(Number(btn.dataset.id)));
+      });
+    }
+
+    function openEditModal(id) {
+      const item = listings.find(l => l.id === id);
+      if (!item) return;
+      document.getElementById("editId").value = item.id;
+      document.getElementById("editTitle").value = item.title;
+      document.getElementById("editCondition").value = item.condition;
+      document.getElementById("editCompatibility").value = item.compatibility;
+      document.getElementById("editPrice").value = item.price;
+      document.getElementById("editDescription").value = item.description;
+      editModal.classList.add("active");
+    }
+
+    document.getElementById("editClose").addEventListener("click", () => editModal.classList.remove("active"));
+    document.getElementById("editCancel").addEventListener("click", () => editModal.classList.remove("active"));
+
+    document.getElementById("editForm").addEventListener("submit", (e) => {
+      e.preventDefault();
+      const id = Number(document.getElementById("editId").value);
+      const item = listings.find(l => l.id === id);
+      if (!item) return;
+      item.title = document.getElementById("editTitle").value;
+      item.condition = document.getElementById("editCondition").value;
+      item.compatibility = document.getElementById("editCompatibility").value;
+      item.price = Number(document.getElementById("editPrice").value);
+      item.description = document.getElementById("editDescription").value;
+      saveListings();
+      editModal.classList.remove("active");
+      renderMyListings();
+      renderMyListingsFull();
+      renderListings();
+    });
+
+    function deleteListing(id) {
+      if (!confirm("Delete this listing?")) return;
+      listings = listings.filter(l => l.id !== id);
+      saveListings();
+      renderMyListings();
+      renderMyListingsFull();
+      renderListings();
+    }
+
+    function renderMessages() {
+      messagesListDiv.innerHTML = messages.map(m => `
+        <div class="message-item">
+          <div class="message-sender">
+            <div>${m.from}</div>
+            <div class="message-meta">${m.date}</div>
+          </div>
+          <div>
+            <div style="font-weight:700;">${m.subject}</div>
+            <div class="message-body">${m.body}</div>
+          </div>
+        </div>
+      `).join("");
+    }
+
+    messageForm.addEventListener("submit", (e) => {
+      e.preventDefault();
+      const to = document.getElementById("msgTo").value.trim();
+      const subject = document.getElementById("msgSubject").value.trim();
+      const body = document.getElementById("msgBody").value.trim();
+      const msg = {
+        id: Date.now(),
+        from: "You",
+        subject,
+        body,
+        date: new Date().toISOString().slice(0,10)
+      };
+      messages.unshift(msg);
+      saveMessages();
+      messageForm.reset();
+      renderMessages();
+      alert("Message sent (demo).");
+    });
+
+    // Marketplace logic
+    const grid = document.getElementById("listingGrid");
+    const sellForm = document.getElementById("sellForm");
+    const searchInput = document.getElementById("searchInput");
+    const categorySearch = document.getElementById("categorySearch");
+    const minPrice = document.getElementById("minPrice");
+    const maxPrice = document.getElementById("maxPrice");
+    const conditionFilter = document.getElementById("conditionFilter");
+    const makeFilter = document.getElementById("makeFilter");
+    const sortBy = document.getElementById("sortBy");
+    const categoryBar = document.getElementById("categoryBar");
+    const applyFilters = document.getElementById("applyFilters");
+
+    const detailTitle = document.getElementById("detailTitle");
+    const detailMeta = document.getElementById("detailMeta");
+    const detailPrice = document.getElementById("detailPrice");
+    const detailSeller = document.getElementById("detailSeller");
+    const detailDescription = document.getElementById("detailDescription");
+    const detailClose = document.getElementById("detailClose");
+    const contactSellerBtn = document.getElementById("contactSellerBtn");
+    const favoriteBtn = document.getElementById("favoriteBtn");
+
+    const heroSellBtn = document.getElementById("heroSellBtn");
+    const heroBrowseBtn = document.getElementById("heroBrowseBtn");
+
+    let selectedCategory = "";
+    let currentListing = null;
+
+    grid.addEventListener("click", (e) => {
+      if (e.target.closest(".btn") || e.target.closest(".card")) {
+        const card = e.target.closest(".card");
+        if (!card) return;
+        const title = card.querySelector(".title").textContent;
+        const item = listings.find(l => l.title === title);
+        if (!item) return;
+        openDetailModal(item);
+      }
+    });
+
+    function openDetailModal(item) {
+      currentListing = item;
+      detailTitle.textContent = item.title;
+      detailMeta.textContent = `${item.category} · ${item.compatibility}`;
+      detailPrice.textContent = `£${item.price}`;
+      detailSeller.innerHTML = `<div class="avatar">${item.seller.charAt(0)}</div> ${item.seller} · ${item.rating}`;
+      detailDescription.textContent = item.description;
+      detailModal.classList.add("active");
+    }
+
+    detailClose.addEventListener("click", () => detailModal.classList.remove("active"));
+    contactSellerBtn.addEventListener("click", () => {
+      if (!currentListing) return;
+      alert(`This would open a chat with ${currentListing.seller} about:\n${currentListing.title}`);
+    });
+    favoriteBtn.addEventListener("click", () => {
+      if (!currentListing) return;
+      alert(`Saved "${currentListing.title}" to favourites (demo).`);
+    });
+
+    heroSellBtn.addEventListener("click", () => sellForm.scrollIntoView({ behavior: "smooth", block: "center" }));
+    heroBrowseBtn.addEventListener("click", () => grid.parentElement.scrollIntoView({ behavior: "smooth", block: "start" }));
+
+    function renderListings() {
+      const query = searchInput.value.trim().toLowerCase();
+      const catQuery = categorySearch.value.trim().toLowerCase();
+      const min = minPrice.value ? Number(minPrice.value) : null;
+      const max = maxPrice.value ? Number(maxPrice.value) : null;
+      const condition = conditionFilter.value;
+      const make = makeFilter.value.trim().toLowerCase();
+      const sort = sortBy.value;
+
+      let filtered = listings.filter(item => {
+        const matchesSearch = !query ||
+          item.title.toLowerCase().includes(query) ||
+          item.category.toLowerCase().includes(query) ||
+          item.compatibility.toLowerCase().includes(query) ||
+          item.description.toLowerCase().includes(query);
+        const matchesCategory = !selectedCategory || item.category === selectedCategory;
+        const matchesSelect = !catQuery || item.category.toLowerCase().includes(catQuery);
+        const matchesMin = min === null || item.price >= min;
+        const matchesMax = max === null || item.price <= max;
+        const matchesCondition = !condition || item.condition === condition;
+        const matchesMake = !make || item.compatibility.toLowerCase().includes(make) || item.title.toLowerCase().includes(make);
+        return matchesSearch && matchesCategory && matchesSelect && matchesMin && matchesMax && matchesCondition && matchesMake;
+      });
+
+      if (sort === "price-asc") filtered.sort((a, b) => a.price - b.price);
+      if (sort === "price-desc") filtered.sort((a, b) => b.price - a.price);
+      if (sort === "newest") filtered = filtered.reverse();
+
+      grid.innerHTML = filtered.map(item => `
+        <article class="card">
+          <div class="thumb">
+            <span class="badge ${item.condition === "Used" ? "used" : ""}">${item.condition}</span>
+          </div>
+          <div class="card-body">
+            <h3 class="title">${item.title}</h3>
+            <div class="meta">${item.compatibility} · ${item.category}</div>
+            <div class="seller"><div class="avatar">${item.seller.charAt(0)}</div> ${item.seller} · ${item.rating}</div>
+            <div class="meta" style="margin-top:8px;">${item.description}</div>
+            <div class="price-row">
+              <div class="price">£${item.price}</div>
+              <button class="btn" type="button">View</button>
+            </div>
+          </div>
+        </article>
+      `).join("") || `<p class="meta">No listings match your filters.</p>`;
+    }
+
+    sellForm.addEventListener("submit", (e) => {
+      e.preventDefault();
+      if (!isLoggedIn()) {
+        alert("Please log in or sign up to list a part.");
+        showPage(loginPage);
+        return;
+      }
+      const data = new FormData(sellForm);
+      const name = localStorage.getItem("yourcustomUserName") || "You";
+      const newListing = {
+        id: nextId++,
+        title: data.get("title"),
+        category: data.get("compatibility").includes("BMW") ? "BMW" : "Performance",
+        condition: data.get("condition"),
+        compatibility: data.get("compatibility"),
+        price: Number(data.get("price")),
+        seller: name,
+        rating: 5.0,
+        description: data.get("description")
+      };
+      listings.unshift(newListing);
+      saveListings();
+      sellForm.reset();
+      renderListings();
+      renderMyListings();
+      renderMyListingsFull();
+      grid.parentElement.scrollIntoView({ behavior: "smooth", block: "start" });
+    });
+
+    searchInput.addEventListener("input", renderListings);
+    categorySearch.addEventListener("change", renderListings);
+    minPrice.addEventListener("input", renderListings);
+    maxPrice.addEventListener("input", renderListings);
+    conditionFilter.addEventListener("change", renderListings);
+    makeFilter.addEventListener("input", renderListings);
+    sortBy.addEventListener("change", renderListings);
+    applyFilters.addEventListener("click", renderListings);
+
+    categoryBar.addEventListener("click", (e) => {
+      if (!e.target.matches(".chip")) return;
+      document.querySelectorAll(".chip").forEach(chip => chip.classList.remove("active"));
+      e.target.classList.add("active");
+      selectedCategory = e.target.dataset.category || "";
+      renderListings();
+    });
+
+    // Init
+    window.addEventListener("hashchange", handleHash);
+    handleHash();
+    updateAuthButtons();
+    renderListings();
+  </script>
+</body>
+</html>
